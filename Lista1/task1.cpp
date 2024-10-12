@@ -13,6 +13,22 @@ my_max (T a, T b, C comp)
   return comp (a, b);
 }
 
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const std::vector<T> &vec)
+{
+  os << "{";
+  for (const auto &el : vec)
+  {
+    os << el;
+    if (el != vec[vec.size() - 1])
+    {
+      os << ", ";
+    }
+  }
+  os << "}\n";
+  return os;
+}
+
 int
 main ()
 {

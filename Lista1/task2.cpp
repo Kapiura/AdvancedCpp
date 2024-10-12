@@ -25,6 +25,23 @@ insert_sort (std::vector<T> &vec)
   return vec;
 }
 
+template <typename T>
+std::ostream &
+operator<< (std::ostream &os, const std::vector<T> &vec)
+{
+  os << "{";
+  for (const auto &el : vec)
+    {
+      os << el;
+      if (el != vec[vec.size () - 1])
+        {
+          os << ", ";
+        }
+    }
+  os << "}\n";
+  return os;
+}
+
 int
 main ()
 {
@@ -33,22 +50,21 @@ main ()
   std::vector<int> unsortedIntVector = { 5, 3, 1, 4, 2, 9, 7, 8, 6 };
   std::cout << "Unsorted vector:\n"
             << unsortedIntVector
-            << "Sorted
-      vector :\n ";
+            << "Sorted vector :\n ";
       std::cout
             << insert_sort (unsortedIntVector)
             << "\n";
 
   std::vector<double> unsortedDoubleVector
       = { 5.12, 5.13, 5.1, 5.0, 5.009, 5.123, 5.01, 5.11, 5.12 };
-  std::cout << "Unsorted vector:\n" << unsortedDoubleVector << "Sorted vector:\n";
+  std::cout << "Unsorted vector:\n"
+            << unsortedDoubleVector << "Sorted vector:\n";
   std::cout << insert_sort (unsortedDoubleVector) << "\n";
 
   std::vector<char> unsortedCharVector = { 'x', 'i', 'c', 't', 'a' };
   std::cout << "Unsorted vector:\n"
             << unsortedCharVector
-            << "Sorted
-      vector :\n ";
+            << "Sorted vector :\n ";
       std::cout
             << insert_sort (unsortedCharVector)
             << "\n";

@@ -1,6 +1,3 @@
-// Kacper Wiszniewski
-// ISSP
-// 2024
 #include <iostream>
 #include <iterator>
 #include <vector>

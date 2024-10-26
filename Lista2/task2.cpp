@@ -1,18 +1,28 @@
 #include <iostream>
 
 // Task 2 - factorial by metaprogramming
-constexpr int
-factorial (const unsigned int &num)
+template <typename T> class Factorial
 {
-  return num <= 1 ? 1 : num * factorial (num - 1);
-}
+};
 
-template <>
-class Factorial
-
-    int
-    main ()
+template <> class Factorial<int>
 {
-  std::cout << factorial (5) << "\n";
+public:
+  static constexpr int
+  factorial (int num)
+  {
+    return num <= 0 ? 1 : num * factorial (num - 1);
+  };
+};
+
+int
+main ()
+{
+  std::cout << Factorial<int>::factorial (0) << "\n";
+  std::cout << Factorial<int>::factorial (1) << "\n";
+  std::cout << Factorial<int>::factorial (2) << "\n";
+  std::cout << Factorial<int>::factorial (3) << "\n";
+  std::cout << Factorial<int>::factorial (4) << "\n";
+  std::cout << Factorial<int>::factorial (5) << "\n";
   return 0;
 }

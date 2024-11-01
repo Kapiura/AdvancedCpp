@@ -1,5 +1,6 @@
 #include <iostream>
 
+// Task 3
 void
 print_all ()
 {

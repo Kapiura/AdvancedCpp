@@ -3,7 +3,8 @@
 #include <memory>
 
 // Task 3 - single linked lsit
-template <typename T> class Node
+template <typename T>
+class Node
 {
 public:
   Node (T val) : value (val), next (nullptr) {}
@@ -11,7 +12,8 @@ public:
   std::unique_ptr<Node> next;
 };
 
-template <typename T> class ForwardList
+template <typename T>
+class ForwardList
 {
 public:
   std::unique_ptr<Node<T> > head;
@@ -19,8 +21,7 @@ public:
   ForwardList () : head (nullptr) {}
   ForwardList (T h) : head (std::make_unique<Node<T> > (h)) {}
 
-  void
-  push (T val)
+  void push (T val)
   {
     if (!head)
       {
@@ -37,8 +38,7 @@ public:
       }
   }
 
-  void
-  display ()
+  void display ()
   {
     Node<T> *temp = head.get ();
     std::cout << "{";
@@ -54,12 +54,10 @@ public:
     std::cout << "}\n";
   }
 
-  void
-  reverse ()
+  void reverse ()
   {
     std::unique_ptr<Node<T> > prev = nullptr;
     std::unique_ptr<Node<T> > current = std::move (head);
-
     while (current)
       {
         std::unique_ptr<Node<T> > next = std::move (current->next);
@@ -67,13 +65,11 @@ public:
         prev = std::move (current);
         current = std::move (next);
       }
-
     head = std::move (prev);
   }
 };
 
-int
-main ()
+int main ()
 {
   ForwardList<int> list (10);
   list.push (20);

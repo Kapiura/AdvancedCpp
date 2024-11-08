@@ -154,15 +154,15 @@ namespace cpplab
 } // namespace cpplab
 
 template <typename T>
-concept IsArithmetic = requires (T a) { std::is_arithmetic_v<T>; };
+concept VectorType = requires (T a)
+{
+  std::is_arithmetic_v<T>;
+  a[0];
+  a.size();
+};
 
-template <typename T>
-concept Indexable = requires (T a) { a[ 0 ]; };
-
-template <typename T>
-concept VectorType = IsArithmetic<T> && Indexable<T>;
-
-template <VectorType V1, VectorType V2> auto operator* (const V1 &vec1, const V2 &vec2)
+template <VectorType V1, VectorType V2> 
+auto operator* (const V1 &vec1, const V2 &vec2)
 {
 	using ResultType = decltype (vec1[ 0 ] * vec2[ 0 ]);
 
@@ -190,13 +190,15 @@ int main ()
 	std::cout << res3 << "\n";
 	std::cout << res4 << "\n";
 
-	cpplab::vector<char> v5{'a', 'b', 'c', 'd'};
-	std::vector<char> v6{'w', 'x', 'y', 'z'};
-	std::string res5 = v5 * v6;
-	std::string res6 = v6 * v5;
-	std::cout << res5 << "\n";
-	std::cout << res6 << "\n";
+  // doesnt work, cuz char isnt arithmetic
+	//cpplab::vector<char> v5{'a', 'b', 'c', 'd'};
+	//std::vector<char> v6{'w', 'x', 'y', 'z'};
+	//std::string res5 = v5 * v6;
+	//std::string res6 = v6 * v5;
+	//std::cout << res5 << "\n";
+	//std::cout << res6 << "\n";
 
+  // doesnt work, cuz string isnt arithmetic
 	cpplab::vector<std::string> v7{"Hello", "world"};
 	std::vector<std::string> v8{"essa"
 								"skibidi"};

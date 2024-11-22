@@ -69,11 +69,16 @@ namespace cpplab
     			rhs._capacity = 0;
     			rhs._tab = nullptr;
 		}
-
-		bool emplace_back()
+    		template <typename... Args>
+    		void emplace_back(Args&&... args) 
 		{
-			return 0;
-		}
+        		if (_size == _capacity)
+            			reserve(_capacity == 0 ? 1 : _capacity * 2); 
+
+        		new (_tab + _size) T(std::forward<Args>(args)...);
+        		++_size;
+    		}
+
 		const size_t size () const
 		{
 			return _size;
@@ -185,11 +190,17 @@ class Pixel
 {
 public:
 	Pixel() = default;
-	Pixel(int r, int g, int b):
-		r(r), g(g), b(b)
+	template<typename T>
+	Pixel(T&& r, T&& g, T&& b):
+		_r(std::forward<T>(r)), _g(std::forward<T>(g)), _b(std::forward<T>(b))
 	{}
+	int r() const {return _r;};
+	int g() const {return _g;};
+	int b() const {return _b;};
 private:
-	int r, g, b;
+	int _r;
+	int _g;
+	int _b;
 };
 
 
@@ -221,4 +232,10 @@ int main ()
 	v3.printVectorInfo();
 
 	std::cout << "\ntask2\n";
+	cpplab::vector<Pixel> pix;
+	pix.emplace_back();
+	pix.emplace_back(22, 33, 11);
+    	pix.emplace_back(1, 2, 3);
+	for(size_t i = 0; i < pix.size(); i++)
+		std::cout << "rgb = (" << pix[i].r() << ", " << pix[i].g() << ", " << pix[i].b() << ")\n";
 }

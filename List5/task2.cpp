@@ -1,12 +1,13 @@
 #include <iostream>
 #include <optional>
+#include <type_traits>
 #include <utility>
 
 namespace cpplab
 {
 	template <typename T> class unique_ptr
 	{
-	  protected:
+	  private:
 		T *pointer;
 
 	  public:
@@ -83,6 +84,54 @@ namespace cpplab
 			return pointer;
 		}
 	};
+
+template<typename T>
+concept notNullPtr = std::is_pointer_v<T> && !std::is_same_v<T, std::nullptr_t>;
+
+template <notNullPtr T>
+class non0_ptr {
+private:
+    T pointer;
+
+public:
+    // Konstruktor z wskaźnikiem, wymaga nie-null
+    explicit non0_ptr(T ptr) : pointer(ptr) {
+        if (!ptr)
+            throw std::invalid_argument("non0_ptr cannot be initialized with nullptr");
+    }
+
+    // Konstruktor przenoszący
+    non0_ptr(non0_ptr&& rhs) noexcept : pointer(std::exchange(rhs.pointer, nullptr)) {}
+
+    // Operator przypisania przenoszącego
+    non0_ptr& operator=(non0_ptr&& rhs) noexcept {
+        if (this != &rhs) {
+            reset(nullptr);
+            pointer = std::exchange(rhs.pointer, nullptr);
+        }
+        return *this;
+    }
+
+    // Usunięcie kopiowania
+    non0_ptr(const non0_ptr&) = delete;
+    non0_ptr& operator=(const non0_ptr&) = delete;
+
+    // Destruktor
+    ~non0_ptr() { reset(nullptr); }
+
+    // Reset wymusza nie-null
+    void reset(T newElement) {
+        if (!newElement)
+            throw std::invalid_argument("non0_ptr cannot reset to nullptr");
+        pointer = newElement;
+    }
+
+    // Dostęp do wskaźnika
+    T get() const noexcept { return pointer; }
+    T& operator*() const { return *pointer; }
+    T operator->() const noexcept { return pointer; }
+};
+
 } // namespace cpplab
 
 int main ()
@@ -110,5 +159,8 @@ int main ()
 	// release u2
 	u2.release ();
 	std::cout << "release u2 = " << u2.get () << "\n\n";
+
+    int* nonNullData = new int(42);
+    // cpplab::non0_ptr<int*> n1(nonNullData);
 	return 0;
 }

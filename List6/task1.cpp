@@ -1,8 +1,3 @@
-// Stworz duzy std::vector<int> (np 1000 elementow) losowych liczb calkoltwiytch
-// Za pomoca dwoch watkow z klasy std::thread oraz funkcji std::sort() posortuj 
-// w pierwszym watku p[ierwsza polowe wektora a w drugim watku druga polowke 
-// wektora czy taki wektore bedzie posrotowany w calosci
-
 #include <iostream>
 #include <vector>
 #include <time.h>

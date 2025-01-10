@@ -1,0 +1,84 @@
+    /*********************************************************************************************************
+        * @author       kacper.wiszniewski@nokia.com / I_EXT_MN_RAN_RD_L3_SW_WRO2_FTW18@internal.nsn.com
+        * @feature      CB008055-SR-D-B300_5G_L3
+        * @jira         FPB-1327272
+        * @purpose      Test CA 5CC SCellSwap with FDD PCell and FDD SCells
+        *               AC: https://gitlab.dynamic.nsn-net.net/ftw181/ac/-/blob/master/CB008055/CP_CL/CB008055-SR-D-B3.md?ref_type=heads#ac-1
+        * @requirement  5G_CP_ARC_ALG_263, 5G_CP_ARC_ALG_278, 5G_CP_ARC_ALG_274, 5G_CP_OTH_13336, 5G_CP_ARC_ALG_15992
+        * @robustness   not_evaluated
+        * @wip          CB008055 SCTs will be unwiped after introduction of rnd param
+        */
+        testcase cl_successfulSCellSwapWith5CC_FFFFF()
+            runs on CpCellMain
+            system TestSystem
+        {
+            init_test()
+
+            var list<CellParamsForCA> cellParams := CELL_PARAMS_N25_N25_N66_N66_N71_N71;
+
+            cellParams[5] := cellParams[4]
+            cellParams[5].cellId := SCELL5_ID
+            cellParams[5].pci := PHYS_CELL_ID_6
+            cellParams[5].scellPrio := SCELL_PRIO_WORSE
+
+            m_cpClData.niddDeliveryReq := buildNiddDeliveryForCaFddAny(
+                p_carrierAggregationSupportList := {Ca_Fdd_Fdd},
+                cellCAParams := cellParams,
+                chBws := {mhz20, mhz20, mhz20, mhz20, mhz20, mhz20})
+
+            addRelationToSCellCandidateByPci(cellIdAsKey := cellParams[PCELL_INDEX].cellId,
+                             candidateCellId := cellParams[SCELL1_INDEX].cellId,
+                             physicalCellId := cellParams[SCELL1_INDEX].pci,
+                             sCellAdditionMethod := covBasedA1);
+
+            applyActFlexSCellSelectFr1(p_niddDeliveryRequest := m_cpClData.niddDeliveryReq, p_actFlexSCellSelectFr1 := true);
+            applyActSCellSwapFr1(m_cpClData.niddDeliveryReq)
+
+            apply5ccEnabled(p_niddDeliveryRequest := m_cpClData.niddDeliveryReq)
+            setupSACellsForFddFddCaWithGivenNiddDeliverReq(cellParams := cellParams,
+                                                           niddDeliveryRequest := m_cpClData.niddDeliveryReq,
+                                                           sCellAdditionMethod := covBasedA1)
+
+            const UeContextInformation ueContextInformation := createUeContextInformationSupportingFFFFFBandCombination()
+
+            resourceAdmissionInICS(
+                cuUeId := CU_UE_ID_1,
+                candidateCellList := {PCELL_ID},
+                ueContextInformation := ueContextInformation,
+                p_ueCaCapabilityCheckRequired := true,
+                p_ueCaCapabilityCheckResult := t_ueCaCapabilityCheckResult_default(t_supportedSCellAdditionMethod_a1Based, t_sCellCandidatesType_fdd),
+                nrCellId := PCELL_ID)
+
+            // SCell Addition
+            var template ServingCellsToBeActivated expectedScells :=
+            {
+                t_sCellFdd(cellParams[SCELL1_INDEX]),
+                t_sCellFdd(cellParams[SCELL2_INDEX]),
+                t_sCellFdd(cellParams[SCELL3_INDEX]),
+                t_sCellFdd(cellParams[SCELL4_INDEX])
+            }
+
+            performSCellConfiguration(
+                p_cuUeId := CU_UE_ID_1,
+                p_nrCellId := PCELL_ID,
+                p_ueContextInformation := ueContextInformation,
+                p_reason := sCellAdditionA1Based,
+                p_sCellsToBeActivated := expectedScells)
+
+            // SCell Swap
+            const integer currentSCellIdentity := buildNrCellIdentity(lcrId := cellParams[SCELL4_INDEX].cellId)
+            const integer candidateSCellIdentity := buildNrCellIdentity(lcrId := cellParams[SCELL5_INDEX].cellId)
+            performSCellConfiguration(
+                p_cuUeId := CU_UE_ID_1,
+                p_nrCellId := cellParams[PCELL_INDEX].cellId,
+                p_ueContextInformation := ueContextInformation,
+                p_reason := sCellSwapA6Based,
+                p_sCellSwapInfo := t_sCellSwapInfo(
+                    PLMNID,
+                    currentSCellIdentity,
+                    candidateSCellIdentity),
+                p_sCellsToBeActivated :=
+                {
+                    t_fddScell(cellParams[SCELL5_INDEX])
+                })
+        }

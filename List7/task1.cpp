@@ -1,7 +1,3 @@
-#include <iostream>
-#include <future>
-#include <vector>
-
 //Napisz funkcję liczącą iloczyn skalarny dwóch wektorów przekazanych jako std::vector<double>
 //Jako trzeci argument funkcja ma przyjmować obiekt typu std::promise, który zostanie użyty
 //do zwrócenia wyniku lub wyjątku w przypadku przekazania wektorów pustych lub różniących
@@ -10,6 +6,11 @@
 //które policzą iloczyny skalarne przy użyciu powyższej funkcji. 
 //Następnie poczekać na wyniki obliczeń
 //(używając mechanizmu future) i wypisać na ekran ich sumę
+
+#include <iostream>
+#include <thread>
+#include <future>
+#include <vector>
 
 void iloczynSkalarny(std::vector<double> vec1, std::vector<double> vec2, std::promise<double> p)
 {
@@ -46,6 +47,31 @@ int main()
     {{-5.0, -10.0, -15.0}, {-1.0, -2.0, -3.0}},
     {{100.0, 200.0, 300.0}, {0.01, 0.02, 0.03}}
   };
+  int wSize = 10;
+  
+  std::vector<std::promise<double>> promises(vecPairs.size());
+  std::vector<std::future<double>> futures;
+  
+  for (auto& p : promises)
+    futures.push_back(p.get_future());
+    
+  std::vector<std::jthread> slave;
+  for (size_t i = 0; i < vecPairs.size(); i++)
+        slave.emplace_back(iloczynSkalarny, vecPairs[i].first, vecPairs[i].second, std::move(promises[i]));
 
+  double sum = 0.0;
+  for (auto& f : futures)
+  {
+    try 
+      {
+        sum += f.get();
+      } 
+    catch (const std::exception& e) 
+      {
+        std::cerr << "Wątek zgłosił wyjątek: " << e.what() << "\n";
+      }
+    }
+  
+  std::cout << "Suma iloczynów skalarnych: " << sum << "\n";
   return 0;
 }

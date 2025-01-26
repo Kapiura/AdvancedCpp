@@ -1,2 +1,0 @@
-/usr/bin/ar qc libsingleton_static.a CMakeFiles/singleton_static.dir/src/singleton.cpp.o CMakeFiles/singleton_static.dir/src/calls1.cpp.o
-/usr/bin/ranlib libsingleton_static.a

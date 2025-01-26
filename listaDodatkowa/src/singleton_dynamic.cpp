@@ -2,8 +2,7 @@
 
 void calls2()
 {
-  Singleton& caller = Singleton::instance();
-  caller.calls();
+  Singleton::instance().calls();
 }
 
 Singleton& instance()

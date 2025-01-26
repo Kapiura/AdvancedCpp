@@ -6,14 +6,17 @@ class Singleton
 {
   private:
     Singleton();
-
-  public:
     ~Singleton();
 
-    Singleton(const Singleton&) = delete;
-    Singleton operator=(const Singleton&) = delete;
-
     static int callsCounter;
+
+  public:
+
+    Singleton(const Singleton&) = delete;
+    Singleton(Singleton&&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+    Singleton& operator=(Singleton&&) = delete;
+
     static Singleton& instance();
     
     void calls();

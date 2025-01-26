@@ -3,6 +3,5 @@
 
 void calls1()
 {
-  Singleton& caller = Singleton::instance();
-  caller.calls();
+  Singleton::instance().calls();
 }

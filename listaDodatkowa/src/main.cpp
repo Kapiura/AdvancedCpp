@@ -5,12 +5,9 @@
 
 int main()
 {
-  Singleton& ref = Singleton::instance();
-  ref.calls();
+  Singleton::instance().calls();
   calls1();
-
-  Singleton& dynamic = instance();
-  dynamic.calls();
+  instance().calls();
   calls2();
   return 0;
 }

@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -pedantic -Werror -fPIC CMakeFiles/main.dir/src/main.cpp.o -o main  -Wl,-rpath,/home/chania/dev/advCpp/listaDodatkowa/build libsingleton_static.a libsingleton_dynamic.so

@@ -1,0 +1,5 @@
+/home/chania/dev/advCpp/listaDodatkowa/build/CMakeFiles/singleton_static.dir
+/home/chania/dev/advCpp/listaDodatkowa/build/CMakeFiles/singleton_dynamic.dir
+/home/chania/dev/advCpp/listaDodatkowa/build/CMakeFiles/main.dir
+/home/chania/dev/advCpp/listaDodatkowa/build/CMakeFiles/edit_cache.dir
+/home/chania/dev/advCpp/listaDodatkowa/build/CMakeFiles/rebuild_cache.dir

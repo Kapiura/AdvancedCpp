@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -Wall -pedantic -Werror -fPIC -shared -Wl,-soname,libsingleton_dynamic.so -o libsingleton_dynamic.so CMakeFiles/singleton_dynamic.dir/src/singleton.cpp.o CMakeFiles/singleton_dynamic.dir/src/singleton_dynamic.cpp.o

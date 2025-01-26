@@ -8,13 +8,18 @@ namespace cpplab
     {
         public:
             using value_type = T;
-            value_type* allocate(std::size_t n)
+            value_type* allocate(size_t n)
             {
-                return new value_type(n); 
-            };
-            void deallocate(value_type* p, std::size_t n)
+              void* ptr = ::operator new(n * sizeof(value_type));
+              return static_cast<value_type*>(ptr);
+            }
+            void deallocate(value_type* p, size_t n)
             {
-                delete [] p;
+              for(size_t i = 0; i<n ; i++)
+              {
+                p[i].~value_type();
+              }
+              ::operator delete(p);
             };
         private:
     };
